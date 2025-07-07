@@ -1,0 +1,118 @@
+IMPLEMENTATION stm32l432 {
+  DEVICE_KIND [] {
+    STRUCT {
+      UINT32 OFFSET;
+      ENUM [ BYTE, HALFWORD, WORD, DOUBLEWORD ] SIZE;
+      STRUCT {
+        UINT32 LOC;
+      } BIT [];
+      STRUCT {
+        UINT32 START;
+        UINT32 STOP;
+      } FIELD [];
+    } REGISTER [];
+    STRUCT {
+      IDENTIFIER ENABLE [];
+      BOOLEAN ACK = FALSE;
+    } EVENT [];
+  };
+  
+  DEVICE [] {
+    DEVICE_KIND_TYPE KIND;
+    UINT32 ADDRESS;
+    INTERRUPT_TYPE VECTOR;
+  };
+
+  OS {
+    BOOLEAN [
+      TRUE {
+        ENUM [
+          serial {
+            UINT32 RXBUFFER = 32;
+            UINT32 TXBUFFER = 16;
+          }
+        ] LIBRARY[];
+      },
+      FALSE
+    ] BUILD = FALSE;
+
+    /* trace */
+    BOOLEAN [
+      TRUE {
+        ENUM [
+          serial
+        ] FORMAT = serial;
+      },
+      FALSE
+    ] TRACE = FALSE;
+  };
+};
+
+CPU stm32l432 {
+  OS features {
+    ISR2_PRIORITY_MASKING = TRUE;
+  };
+
+  CORTEX stm32fl432 {
+    PRIO_BITS = 4;    // used in tpl_cortex_definitions for NVIC config
+    CLOCK = 40000000; // init freq with no external oscillator...
+  };
+
+  BUILDOPTIONS buildOptions {
+     COMMONFLAGS = "-DSTM32L432xx"; //processor def
+  };
+
+  INTERRUPT_COUNT nb_it {
+    IT_TABLE_SIZE = 77; //61 STM32 interrupts + 16 ARM related interrupts.
+  };
+  
+  #include "interruptDefs.oil"
+
+  PLATFORM_FILES stm32l432 {
+    PATH = "cortex-m/armv7em/stm32l432";
+    CFILE = "handlers_stm32l432.c";
+    CFILE = "startup_stm32l432.c";
+    CFILE = "system_stm32l4xx.c";
+    CFILE = "tpl_machine_stm32l432.c";
+    CFILE = "tpl_memory_protection.c";
+  };
+
+  PLATFORM_FILES stm32l432_trace {
+    PATH = "cortex-m/armv7em/stm32f303";
+	CFILE = "tpl_trace.c";
+  };
+
+  PLATFORM_FILES stm32fl432_cmsis {
+    PATH = "cortex-m/armv7em/stm32l432/CMSIS-ST/Device/ST/STM32L4xx/Include";
+  };
+
+  PLATFORM_FILES stm32l432IO {
+    PATH    = "cortex-m/armv7em/stm32l432/lib";
+    CFILE   = "pinAccess.c";
+  };
+
+  LIBRARY serial {
+    PATH = "cortex-m/armv7em/stm32l432/lib";
+	  CHEADER = "serial.h";
+	  CFILE   = "serial.c";
+  };
+
+  POSTBUILD all {
+    COMMAND buildbin {
+      TYPE = COPIER;
+      INPUT = TARGET;
+      OUTPUT = ".bin";
+      PREOPTION = "-O binary";
+    };
+  };
+
+  POSTCOMMAND burn {
+    COMMAND flash {
+      MESSAGE = "Flashing";
+      COMMAND = "st-flash";
+      INPUT = TARGET { EXT = ".bin"; };
+      PREOPTION = "write";
+      POSTOPTION = "0x8000000";
+    };
+  };
+};

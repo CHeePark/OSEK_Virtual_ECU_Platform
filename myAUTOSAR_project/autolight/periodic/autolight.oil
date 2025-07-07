@@ -1,0 +1,62 @@
+OIL_VERSION = "2.5"; // OIL 파일 버전 명시
+
+// Trampoline OS의 리소스 기본 속성 정의
+IMPLEMENTATION trampoline {
+    TASK {
+        UINT32 STACKSIZE = 32768; // 모든 태스크의 기본 스택 크기
+    };
+    ISR {
+        UINT32 STACKSIZE = 32768; // 모든 ISR의 기본 스택 크기
+    };
+};
+
+// 하나의 ECU(전자제어장치) 시스템 정의
+CPU autolight_system {
+  // OS 인스턴스 정의
+  OS config {
+    STATUS = EXTENDED; // 확장 에러 체크 기능 활성화
+    STARTUPHOOK = TRUE; // OS 시작 시 StartupHook 함수 호출
+    BUILD = TRUE {
+      APP_SRC = "autolight.c"; // 빌드할 메인 C 소스 파일
+      TRAMPOLINE_BASE_PATH = "../../.."; // Trampoline 소스 경로
+      APP_NAME = "autolight_exe"; // 생성할 실행 파일 이름
+      LINKER = "gcc"; // 링커로 gcc 사용
+      SYSTEM = PYTHON; // 빌드 시스템에 python 사용
+    };
+  };
+  
+  APPMODE stdAppmode {}; // 애플리케이션 모드 선언
+  
+  // 조도 센서 값을 읽는 태스크
+  TASK Task_Read_Light_Sensor {
+    PRIORITY = 2; // 우선순위 2
+    AUTOSTART = FALSE; // 자동 시작하지 않음
+    ACTIVATION = 1; // 동시에 활성화될 수 있는 인스턴스 수 1 (2로 하면 이 태스크가 중복 수행 가능함)
+    //=1인 경우, 2번째 요청이 무시됨, =2인 경우 2번째 요청은 대기열에 활성화
+    SCHEDULE = FULL; // preemptive 스케줄링
+    EVENT = Event_Sensor_Read_Done; // 사용할 이벤트
+  };
+
+  // 헤드라이트를 제어하는 태스크
+  TASK Task_Control_Headlight {
+    PRIORITY = 1; // 우선순위 1(더 높음)
+    AUTOSTART = TRUE { APPMODE = stdAppmode; }; // stdAppmode에서 자동 시작
+    ACTIVATION = 1; // 동시에 활성화될 수 있는 인스턴스 수 1
+    SCHEDULE = FULL; // preemptive 스케줄링
+    EVENT = Event_Sensor_Read_Done; // 사용할 이벤트
+  };
+
+  // 100ms마다 Task_Read_Light_Sensor를 깨우는 알람
+  ALARM Alarm_100ms {
+    COUNTER = SystemCounter; // 사용할 카운터
+    ACTION = ACTIVATETASK { TASK = Task_Read_Light_Sensor; }; // 알람 만료 시 태스크 활성화
+    //ACTION: 만료, ACTIVATETASK 활성화하겠다(따라서 만료시 활성화)
+    AUTOSTART = TRUE { APPMODE = stdAppmode; ALARMTIME = 100; CYCLETIME = 100; }; // 100틱 후 시작, 100틱마다 반복
+  };
+  
+  // 태스크 간 동기화에 사용할 이벤트
+  EVENT Event_Sensor_Read_Done {
+    MASK = AUTO; // 마스크 값 자동 할당
+    // mask란 각 event 구분하는 비트 값(이벤트A: 0x01, 이벤트B: 0x02 등)
+  };
+};

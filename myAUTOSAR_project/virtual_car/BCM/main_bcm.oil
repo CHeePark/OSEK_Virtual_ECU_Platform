@@ -1,0 +1,42 @@
+OIL_VERSION = "4.0";
+
+IMPLEMENTATION trampoline {
+    TASK { UINT32 STACKSIZE = 32768; };
+    ISR { UINT32 STACKSIZE = 32768; };
+};
+
+CPU BCM_SYSTEM {
+  OS config {
+    STATUS = EXTENDED;
+    BUILD = TRUE {   
+      APP_SRC = "main_bcm.c";
+      APP_SRC = "turn_signal.c";
+      TRAMPOLINE_BASE_PATH = "../../../";
+      APP_NAME = "car_bcm_exe";
+      LINKER = "gcc";
+      SYSTEM = PYTHON;
+    };
+  };
+  
+  APPMODE stdAppmode {};
+
+  TASK Task_Driver_Input {
+    PRIORITY = 1;
+    AUTOSTART = TRUE { APPMODE = stdAppmode; };
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+
+  TASK Task_TurnSignal_Control {
+    PRIORITY = 2;
+    AUTOSTART = TRUE { APPMODE = stdAppmode; };
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    EVENT = Event_TurnSignal_Request;
+    };
+
+  // 방향지시등 제어 요청 이벤트
+  EVENT Event_TurnSignal_Request {
+    MASK = AUTO;
+    };
+};

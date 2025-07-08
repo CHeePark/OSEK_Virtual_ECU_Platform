@@ -1,0 +1,19 @@
+#include "bcm_common.h"  
+
+// 방향지시등 램프를 제어하는 Task
+TASK(Task_TurnSignal_Control) {
+    while(1){
+        WaitEvent(Event_TurnSignal_Request);
+        ClearEvent(Event_TurnSignal_Request);
+    
+        if (turn_signal_status == 1) {
+            printf("[BCM/방향지시등] ✨ 왼쪽 램프 ON\r\n\r\n");
+        } 
+        else if (turn_signal_status == 2) {
+            printf("[BCM/방향지시등] ✨ 오른쪽 램프 ON\r\n\r\n");
+        }
+        else {
+             printf("[BCM/방향지시등] ✨ 모든 램프 OFF\r\n\r\n");
+        }
+    }
+}

@@ -1,0 +1,72 @@
+
+{
+  "alarm" : [],
+  "event" : 
+  [
+    
+    {
+      "MASK" : 1,
+      "NAME" : "Event_TurnSignal_Request",
+      "REF" : 1
+    }
+  ],
+  "ioc" : [],
+  "isr" : [],
+  "message" : [],
+  "resource" : [],
+  "task" : 
+  [
+    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "EVENT" : 
+      [
+        
+        {
+          "VALUE" : "Event_TurnSignal_Request"
+        }
+      ],
+      "KIND" : "Task",
+      "NAME" : "Task_TurnSignal_Control",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 1,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 32768,
+      "TIMING_PROTECTION" : "false",
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "Task_Driver_Input",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 2,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 32768,
+      "TIMING_PROTECTION" : "false",
+      "USEINTERNALRESOURCE" : "false"
+    }
+  ]
+}

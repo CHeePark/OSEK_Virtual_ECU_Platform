@@ -1,7 +1,7 @@
 #include "bcm_common.h"  
 
-int g_lock_status = 0; // 문 잠금 요청 (0:unlock, 1:lock) 
-int g_door_status = 0; // 차량 도어 상태 (0:close, 1:opene)
+bool lock_status = false; // 문 잠금 요청 (false:unlock, true:lock) 
+bool door_status = false; // 차량 도어 상태 (false:open, true:close)
 
 // 방향지시등 램프를 제어하는 Task
 TASK(Task_Door_Control) {
@@ -10,19 +10,21 @@ TASK(Task_Door_Control) {
         WaitEvent(Event_DoorLock_Request);
         ClearEvent(Event_DoorLock_Request);
         
+         printf("[BCM/입력] 현재 상태: \r\n");
+        printf("도어 잠금 요청: %s\r\n", lock_status ? "잠금 요청" : "해제 요청");
+        printf("도어 상태: %s\r\n\r\n", door_status ? "닫힘" : "열림");      
+        
         //[에러 상태]문 열림 && 잠금 명령
-        if (g_door_status == 1 && g_lock_status == 1) {
+        if (door_status == false && lock_status == true) {
             printf("[BCM/도어] ⚠️ 문이 열려있어 잠글 수 없습니다!\r\n\r\n");
         }
         
         //[정상 상태] 문 닫힘 && 잠금 해제/명령
         else {
-            if (g_lock_status == 1) { //잠금 요청
-                g_door_status = 0; 
+            if (lock_status == true) { //잠금 요청
                 printf("[BCM/도어] 🔒 문이 잠겼습니다.\r\n\r\n");
             }
             else {
-                g_door_status = 1; 
                 printf("[BCM/도어] 🔓 문이 열렸습니다.\r\n\r\n");
             }
         } 

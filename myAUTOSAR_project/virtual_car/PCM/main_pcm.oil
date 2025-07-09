@@ -1,0 +1,57 @@
+OIL_VERSION = "4.0";
+
+IMPLEMENTATION trampoline {
+    TASK { UINT32 STACKSIZE = 32768; };
+    ISR { UINT32 STACKSIZE = 32768; };
+};
+
+CPU PCM_SYSTEM {
+  OS config {
+    STATUS = EXTENDED;
+    BUILD = TRUE {   
+      APP_SRC = "main_pcm.c";
+      APP_SRC = "engine_control.c";
+      APP_SRC = "gear_control.c";
+      TRAMPOLINE_BASE_PATH = "../../../";
+      APP_NAME = "car_pcm_exe";
+      LINKER = "gcc";
+      SYSTEM = PYTHON;
+    };
+  };
+  
+  APPMODE stdAppmode {};
+
+  TASK Task_Driver_Input {
+    PRIORITY = 1;
+    AUTOSTART = TRUE { APPMODE = stdAppmode; };
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+  };
+
+  //--Engine_control_Tasks--//
+  TASK Task_Engine_Control {
+     PRIORITY = 2; 
+     AUTOSTART = TRUE { APPMODE = stdAppmode; }; 
+     ACTIVATION = 1; 
+     SCHEDULE = FULL; 
+     EVENT = Event_Engine_Change_Request; 
+  };
+  
+  EVENT Event_Engine_Change_Request {
+     MASK = AUTO; 
+  };
+
+  //--Gear_tasks--//
+  TASK Task_Gear_Control { 
+    PRIORITY = 3; 
+    AUTOSTART = TRUE { APPMODE = stdAppmode; };
+    ACTIVATION = 1;
+    SCHEDULE = FULL; 
+    EVENT = Event_Gear_Change_Request; 
+  };
+
+  EVENT Event_Gear_Change_Request { 
+    MASK = AUTO; 
+  };
+
+};

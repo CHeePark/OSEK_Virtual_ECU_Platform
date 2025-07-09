@@ -3,17 +3,15 @@
 
 #include "tpl_os.h" // trampoline OS 관련 선언 사용 위해 포함
 #include <stdio.h>
-
-//turn_signal.c
-#include <unistd.h>
+#include <stdbool.h>
 
 //--trun_signal_global_variable--//
 extern int turn_signal_status;
 
 
 //--door_lock_global_variable--//
-extern int g_lock_status; 
-extern int g_door_status;
+extern bool lock_status; 
+extern bool door_status;
 
 //function 선언
 void handle_turn_signal(char input);

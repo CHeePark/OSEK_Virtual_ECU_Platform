@@ -1,6 +1,8 @@
 #include "bcm_common.h"  
 
-// 방향지시등 램프를 제어하는 Task
+int turn_signal_status=0;
+
+// 램프 제어 task
 TASK(Task_TurnSignal_Control) {
     while(1){
         //Wait를 통한 이벤트 대기

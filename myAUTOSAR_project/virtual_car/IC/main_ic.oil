@@ -5,15 +5,14 @@ IMPLEMENTATION trampoline {
     ISR { UINT32 STACKSIZE = 32768; };
 };
 
-CPU BCM_SYSTEM {
+CPU IC_SYSTEM {
   OS config {
     STATUS = EXTENDED;
     BUILD = TRUE {   
-      APP_SRC = "main_bcm.c";
-      APP_SRC = "turn_signal.c";
-      APP_SRC = "door_lock.c";
+      APP_SRC = "main_ic.c";
+      APP_SRC = "display_update.c";
       TRAMPOLINE_BASE_PATH = "../../../";
-      APP_NAME = "car_bcm_exe";
+      APP_NAME = "car_ic_exe";
       LINKER = "gcc";
       SYSTEM = PYTHON;
     };
@@ -28,30 +27,15 @@ CPU BCM_SYSTEM {
     SCHEDULE = FULL;
   };
 
-  //--turn_signal_tasks--//
-  TASK Task_TurnSignal_Control {
+  TASK Task_Display_Update {
     PRIORITY = 2;
     AUTOSTART = TRUE { APPMODE = stdAppmode; };
     ACTIVATION = 1;
     SCHEDULE = FULL;
-    EVENT = Event_TurnSignal_Request;
+    EVENT = Event_Display_Update;
   };
 
-  EVENT Event_TurnSignal_Request { //방향지시등 제어 event
+  EVENT Event_Display_Update {
     MASK = AUTO;
   };
-
-  //--door_lock_tasks--//
-  TASK Task_Door_Control {
-    PRIORITY = 2;
-    AUTOSTART = TRUE { APPMODE = stdAppmode; };
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    EVENT = Event_DoorLock_Request;
-  };
-  
-  EVENT Event_DoorLock_Request {
-    MASK = AUTO;
-  };
-
 };

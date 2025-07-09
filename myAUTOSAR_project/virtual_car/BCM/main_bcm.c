@@ -1,6 +1,5 @@
 #include"bcm_common.h"
 
-int turn_signal_status=0;
 
 //-- 공용 Task: 운전자의 키보드 입력을 처리 --//
 TASK(Task_Driver_Input) {
@@ -27,8 +26,9 @@ TASK(Task_Driver_Input) {
                 ShutdownOS(E_OK); 
                 return; 
             default:
+                printf("[BCM/입력 오류] 잘못된 입력입니다.\r\n");
                 break;
-        }       
+        } 
     }
     //TerminateTask();
 }
@@ -61,10 +61,10 @@ void handle_turn_signal(char input) {
 void handle_door_lock(char input) {
     switch(input) {
         case 'l':
-            g_lock_status = 1; // lock
+            lock_status = true; // lock
             break;
         case 'u':
-            g_lock_status = 0; // unlock
+            lock_status = false; // unlock
             break;
         default:
             printf("[ERROR in door_lock]\r\n");
@@ -76,10 +76,10 @@ void handle_door_lock(char input) {
 void handle_door(char input) {
     switch(input) {
         case 'o':
-            g_door_status = 1; // open
+            door_status = false; // open
             break;
         case 'c':
-            g_door_status = 0; // close
+            door_status = true; // close
             break;
         default:
             printf("[ERROR in door]\r\n");

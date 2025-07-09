@@ -64,6 +64,7 @@ CONST(tpl_application_mode, OS_CONST) stdAppmode = 0; /* mask = 1 */
 CONST(tpl_application_mode, OS_CONST) OSDEFAULTAPPMODE = 0;
 CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
   1 /* task Task_TurnSignal_Control : stdAppmode */ ,
+  1 /* task Task_Door_Control : stdAppmode */ ,
   1 /* task Task_Driver_Input : stdAppmode */ 
 };
 
@@ -73,6 +74,10 @@ CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
 /*=============================================================================
  * Declaration of event masks
  */
+
+/* Event Event_DoorLock_Request */
+#define Event_DoorLock_Request_mask 1
+CONST(EventMaskType, AUTOMATIC) Event_DoorLock_Request = Event_DoorLock_Request_mask;
 
 /* Event Event_TurnSignal_Request */
 #define Event_TurnSignal_Request_mask 1
@@ -86,8 +91,12 @@ CONST(EventMaskType, AUTOMATIC) Event_TurnSignal_Request = Event_TurnSignal_Requ
 #define Task_TurnSignal_Control_id 0
 CONST(TaskType, AUTOMATIC) Task_TurnSignal_Control = Task_TurnSignal_Control_id;
 
+/* Task Task_Door_Control identifier */
+#define Task_Door_Control_id 1
+CONST(TaskType, AUTOMATIC) Task_Door_Control = Task_Door_Control_id;
+
 /* Task Task_Driver_Input identifier */
-#define Task_Driver_Input_id 1
+#define Task_Driver_Input_id 2
 CONST(TaskType, AUTOMATIC) Task_Driver_Input = Task_Driver_Input_id;
 
 #define API_STOP_SEC_CONST_UNSPECIFIED
@@ -369,6 +378,119 @@ VAR(tpl_task_events, OS_VAR) Task_TurnSignal_Control_task_evts = {
 #include "tpl_memmap.h"
 
 /*-----------------------------------------------------------------------------
+ * Task Task_Door_Control descriptor
+ */
+#define APP_Task_Task_Door_Control_START_SEC_CODE
+
+#include "tpl_memmap.h"
+/*
+ * Task Task_Door_Control function prototype
+ */
+
+FUNC(void, OS_APPL_CODE) Task_Door_Control_function(void);
+#define APP_Task_Task_Door_Control_STOP_SEC_CODE
+
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Target specific structures
+ */
+/*
+ * Task Task_Door_Control stack
+ */
+#define APP_Task_Task_Door_Control_START_SEC_STACK
+#include "tpl_memmap.h"
+tpl_stack_word Task_Door_Control_stack_zone[32768/sizeof(tpl_stack_word)];
+#define APP_Task_Task_Door_Control_STOP_SEC_STACK
+#include "tpl_memmap.h"
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+struct TPL_STACK Task_Door_Control_stack = {Task_Door_Control_stack_zone, 32768};
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define Task_Door_Control_STACK &Task_Door_Control_stack
+
+/*
+ * Task Task_Door_Control context
+ */
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+struct TPL_CONTEXT Task_Door_Control_context;
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define Task_Door_Control_CONTEXT &Task_Door_Control_context
+
+
+
+
+
+/*
+  No timing protection
+ */
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+/*
+ * Static descriptor of task Task_Door_Control
+ */
+CONST(tpl_proc_static, OS_CONST) Task_Door_Control_task_stat_desc = {
+  /* context                  */  Task_Door_Control_CONTEXT,
+  /* stack                    */  Task_Door_Control_STACK,
+  /* entry point (function)   */  Task_Door_Control_function,
+  /* internal ressource       */  NULL,
+  /* task id                  */  Task_Door_Control_id,
+#if WITH_OSAPPLICATION == YES
+  /* OS application id        */  
+#endif
+  /* task base priority       */  2,
+  /* max activation count     */  1,
+  /* task type                */  TASK_EXTENDED,
+#if WITH_AUTOSAR_TIMING_PROTECTION == YES
+
+  /* execution budget */        0,
+  /* timeframe        */        0, 
+  /* pointer to the timing
+     protection descriptor    */ NULL
+
+#endif
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+/*
+ * Dynamic descriptor of task Task_Door_Control
+ */
+VAR(tpl_proc, OS_VAR) Task_Door_Control_task_desc = {
+  /* resources                      */  NULL,
+#if WITH_OSAPPLICATION == YES
+  /* if > 0 the process is trusted  */  ,    
+#endif /* WITH_OSAPPLICATION */
+  /* activate count                 */  0,
+  /* task priority                  */  2,
+  /* task state                     */  AUTOSTART
+};
+
+/*
+ * Event structure of task Task_Door_Control
+ */
+VAR(tpl_task_events, OS_VAR) Task_Door_Control_task_evts = {
+  /* event set  */ 0,
+  /* event wait */ 0
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
  * Task Task_Driver_Input descriptor
  */
 #define APP_Task_Task_Driver_Input_START_SEC_CODE
@@ -482,6 +604,7 @@ VAR(tpl_proc, OS_VAR) Task_Driver_Input_task_desc = {
 CONSTP2CONST(tpl_proc_static, AUTOMATIC, OS_APPL_DATA)
 tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Task_TurnSignal_Control_task_stat_desc,
+  &Task_Door_Control_task_stat_desc,
   &Task_Driver_Input_task_stat_desc,
   &IDLE_TASK_task_stat_desc
 };
@@ -489,13 +612,15 @@ tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
 CONSTP2VAR(tpl_proc, AUTOMATIC, OS_APPL_DATA)
 tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Task_TurnSignal_Control_task_desc,
+  &Task_Door_Control_task_desc,
   &Task_Driver_Input_task_desc,
   &IDLE_TASK_task_desc
 };
 
 CONSTP2VAR(tpl_task_events, AUTOMATIC, OS_APPL_DATA)
 tpl_task_events_table[EXTENDED_TASK_COUNT] = {
-  &Task_TurnSignal_Control_task_evts
+  &Task_TurnSignal_Control_task_evts,
+  &Task_Door_Control_task_evts
 };
 
 
@@ -515,7 +640,7 @@ tpl_task_events_table[EXTENDED_TASK_COUNT] = {
 #define OS_START_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
-VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[4];
+VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[5];
 VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[4] = {
   0,
   0,
@@ -558,6 +683,7 @@ VAR(tpl_kern_state, OS_VAR) tpl_kern =
 CONSTP2CONST(char, AUTOMATIC, OS_APPL_DATA) proc_name_table[TASK_COUNT + ISR_COUNT + 1] = {
 
   "Task_TurnSignal_Control",
+  "Task_Door_Control",
   "Task_Driver_Input",
   "*idle*"
 };

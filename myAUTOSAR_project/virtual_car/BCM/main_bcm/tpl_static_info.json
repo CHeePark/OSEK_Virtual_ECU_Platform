@@ -6,6 +6,11 @@
     
     {
       "MASK" : 1,
+      "NAME" : "Event_DoorLock_Request",
+      "REF" : 1
+    },    
+    {
+      "MASK" : 1,
       "NAME" : "Event_TurnSignal_Request",
       "REF" : 1
     }
@@ -39,6 +44,35 @@
       ],
       "KIND" : "Task",
       "NAME" : "Task_TurnSignal_Control",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 2,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 32768,
+      "TIMING_PROTECTION" : "false",
+      "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "EVENT" : 
+      [
+        
+        {
+          "VALUE" : "Event_DoorLock_Request"
+        }
+      ],
+      "KIND" : "Task",
+      "NAME" : "Task_Door_Control",
       "NONPREEMPTABLE" : "false",
       "PRIORITY" : 2,
       "SCHEDULE" : "FULL",

@@ -11,6 +11,7 @@ CPU BCM_SYSTEM {
     BUILD = TRUE {   
       APP_SRC = "main_bcm.c";
       APP_SRC = "turn_signal.c";
+      APP_SRC = "door_lock.c";
       TRAMPOLINE_BASE_PATH = "../../../";
       APP_NAME = "car_bcm_exe";
       LINKER = "gcc";
@@ -27,6 +28,7 @@ CPU BCM_SYSTEM {
     SCHEDULE = FULL;
   };
 
+  //--turn_signal_tasks--//
   TASK Task_TurnSignal_Control {
     PRIORITY = 2;
     AUTOSTART = TRUE { APPMODE = stdAppmode; };
@@ -35,8 +37,22 @@ CPU BCM_SYSTEM {
     EVENT = Event_TurnSignal_Request;
     };
 
-  // 방향지시등 제어 요청 이벤트
-  EVENT Event_TurnSignal_Request {
+  EVENT Event_TurnSignal_Request { //방향지시등 제어 event
     MASK = AUTO;
     };
+
+  //--door_lock_tasks--//
+  TASK Task_Door_Control
+  {
+    PRIORITY = 2;
+    AUTOSTART = TRUE { APPMODE = stdAppmode; };
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    EVENT = Event_DoorLock_Request;
+  };
+  
+  EVENT Event_DoorLock_Request {
+    MASK = AUTO;
+  };
+
 };

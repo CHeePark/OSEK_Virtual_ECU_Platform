@@ -90,9 +90,9 @@
  *   right with the rank set to 0;
  * - RANK_MASK is the mask to get only the rank.
  */
-#define PRIORITY_SHIFT                   1
-#define PRIORITY_MASK                    6
-#define RANK_MASK                        1
+#define PRIORITY_SHIFT                   2
+#define PRIORITY_MASK                    12
+#define RANK_MASK                        3
 
 /*=============================================================================
  * Number of objects used by the application
@@ -108,7 +108,7 @@
 /*-----------------------------------------------------------------------------
  * Number of tasks
  */
-#define TASK_COUNT             2
+#define TASK_COUNT             3
 
 /*-----------------------------------------------------------------------------
  * Number of spinlocks
@@ -118,7 +118,7 @@
 /*-----------------------------------------------------------------------------
  * Number of extended tasks
  */
-#define EXTENDED_TASK_COUNT    1
+#define EXTENDED_TASK_COUNT    2
 
 /*-----------------------------------------------------------------------------
  * Number of ISR2
@@ -138,7 +138,7 @@
 /*-----------------------------------------------------------------------------
  * Number of events
  */
-#define EVENT_COUNT            1
+#define EVENT_COUNT            2
 
 /*-----------------------------------------------------------------------------
  * Number of messages

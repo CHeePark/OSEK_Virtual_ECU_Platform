@@ -539,8 +539,10 @@ FUNC(ISRType, OS_CODE) GetISRID(void);
  * Objects declared in the OIL/ARXML file
  */
 DeclareApplicationMode(stdAppmode);
+DeclareTask(Task_Door_Control);
 DeclareTask(Task_Driver_Input);
 DeclareTask(Task_TurnSignal_Control);
+DeclareEvent(Event_DoorLock_Request);
 DeclareEvent(Event_TurnSignal_Request);
 
 #ifdef __cplusplus

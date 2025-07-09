@@ -1,31 +1,31 @@
 #include"bcm_common.h"
-//#include"turn_signal.c"
+
 int turn_signal_status=0;
 
-// --- 공용 Task: 운전자의 키보드 입력을 처리 ---
+//-- 공용 Task: 운전자의 키보드 입력을 처리 --//
 TASK(Task_Driver_Input) {
-    printf("BCM 통합 제어 시스템 v1.0\r\n");
-    printf("✨방향지시등 조작: s: 좌측 ON, d: 끄기, f: 우측 ON\r\n");
-    printf("q 또는 a: 프로그램 종료\r\n\r\n");
+    printf("BCM 통합 제어 시스템\r\n");
+     printf("[방향지시등]   s:좌측, d:끄기, f:우측\r\n");
+    printf("[도어]          l:잠금, u:해제, o:문열기, c:문닫기\r\n");
+    printf("[종료] q 또는 a\r\n\r\n");
 
     while(1) {
         int input = getchar();
-        
-        int prev_status = turn_signal_status;
 
         switch(input) {
-            case 's':
-                turn_signal_status = 1; // 상태를 '좌측'으로 변경
-                SetEvent(Task_TurnSignal_Control, Event_TurnSignal_Request);
+            case 's': case 'f': case 'd':
+                handle_turn_signal(input); 
                 break;
-            case 'f':
-                turn_signal_status = 2; // 상태를 '우측'으로 변경
-                SetEvent(Task_TurnSignal_Control, Event_TurnSignal_Request);
+            case 'l': case 'u':
+                handle_door_lock(input);
                 break;
-            case 'd':
-                turn_signal_status = 0; // 상태를 '끔'으로 변경
-                SetEvent(Task_TurnSignal_Control, Event_TurnSignal_Request);
+            case 'o': case 'c':
+                handle_door(input);
                 break;
+            case 'q': case 'a':
+                printf("BCM 시스템 종료...\r\n");
+                ShutdownOS(E_OK); 
+                return; 
             default:
                 break;
         }       
@@ -33,10 +33,57 @@ TASK(Task_Driver_Input) {
     //TerminateTask();
 }
 
-
-// --- 프로그램의 시작점 ---
+//-- main --//
 int main(void) {
-    printf("BCM(차체 제어 모듈) 시스템 부팅...\r\n\r\n");
+    printf("BCM(Body Control Module) 시스템 부팅...\r\n\r\n");
     StartOS(stdAppmode);
     return 0;
+}
+
+void handle_turn_signal(char input) {
+    switch(input) {
+        case 's':
+            turn_signal_status = 1; // 좌측 
+            break;
+        case 'f':
+            turn_signal_status = 2; // 우측
+            break;
+        case 'd':
+            turn_signal_status = 0; // OFF
+            break;
+        default:
+            printf("[ERROR in turn_signal]\r\n");
+            break;
+    }
+    SetEvent(Task_TurnSignal_Control, Event_TurnSignal_Request);
+}
+
+void handle_door_lock(char input) {
+    switch(input) {
+        case 'l':
+            g_lock_status = 1; // lock
+            break;
+        case 'u':
+            g_lock_status = 0; // unlock
+            break;
+        default:
+            printf("[ERROR in door_lock]\r\n");
+            break;
+    }
+    SetEvent(Task_Door_Control, Event_DoorLock_Request);
+}
+
+void handle_door(char input) {
+    switch(input) {
+        case 'o':
+            g_door_status = 1; // open
+            break;
+        case 'c':
+            g_door_status = 0; // close
+            break;
+        default:
+            printf("[ERROR in door]\r\n");
+            break;
+    }
+    SetEvent(Task_Door_Control, Event_DoorLock_Request);
 }

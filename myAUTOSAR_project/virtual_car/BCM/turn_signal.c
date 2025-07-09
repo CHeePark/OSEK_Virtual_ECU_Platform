@@ -3,6 +3,7 @@
 // 방향지시등 램프를 제어하는 Task
 TASK(Task_TurnSignal_Control) {
     while(1){
+        //Wait를 통한 이벤트 대기
         WaitEvent(Event_TurnSignal_Request);
         ClearEvent(Event_TurnSignal_Request);
     

@@ -5,6 +5,22 @@ int rpm = 0; // 엔진 RPM
 extern char gear_pos; 
 extern int acceleration; 
 
+extern void can_send(const can_msg_t* msg);
+
+// 엔진 상태가 변경될 때 호출할 함수
+void send_engine_status() {
+    can_msg_t msg;
+    msg.id = 0x100;  // 엔진 상태 메시지 ID
+    msg.len = 3;
+    msg.data[0] = engine_on ? 1 : 0;  // 엔진 상태
+    msg.data[1] = (rpm >> 8) & 0xFF;  // RPM 상위 바이트
+    msg.data[2] = rpm & 0xFF;         // RPM 하위 바이트
+    
+    can_send(&msg);
+    printf("[PCM/CAN] 엔진 상태 전송: %s, RPM: %d\n", 
+           engine_on ? "ON" : "OFF", rpm);
+}
+
 TASK(Task_Engine_Control) {
     while(1) {
         WaitEvent(Event_Engine_Change_Request);
@@ -51,6 +67,8 @@ TASK(Task_Engine_Control) {
             
         }
         printf("[PCM/엔진] ⚙️ RPM: %d  Engine 점화: %s \r\n", rpm,engine_on ? "ON" : "OFF");
+        send_engine_status();
+    
     }
     TerminateTask();
 }

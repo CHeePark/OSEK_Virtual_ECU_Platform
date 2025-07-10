@@ -539,6 +539,7 @@ FUNC(ISRType, OS_CODE) GetISRID(void);
  * Objects declared in the OIL/ARXML file
  */
 DeclareApplicationMode(stdAppmode);
+DeclareTask(Task_CAN_Receiver);
 DeclareTask(Task_Display_Update);
 DeclareTask(Task_Driver_Input);
 DeclareEvent(Event_Display_Update);

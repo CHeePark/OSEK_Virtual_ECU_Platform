@@ -34,6 +34,11 @@ TASK(Task_Driver_Input) {
 
 // 메인 함수
 int main(void) {
+    
+    printf("IC CAN 클라이언트 초기화 중...\n");
+    can_client_init("127.0.0.1", 9000);
+    printf("IC CAN 클라이언트 초기화 완료\n");
+
     printf("IC(계기판) 시스템 부팅...\r\n\r\n");
     StartOS(stdAppmode);
     return 0;

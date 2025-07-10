@@ -91,7 +91,7 @@
  * - RANK_MASK is the mask to get only the rank.
  */
 #define PRIORITY_SHIFT                   1
-#define PRIORITY_MASK                    6
+#define PRIORITY_MASK                    14
 #define RANK_MASK                        1
 
 /*=============================================================================
@@ -103,12 +103,12 @@
 /*-----------------------------------------------------------------------------
  * Number of priority levels
  */
-#define PRIO_LEVEL_COUNT       3
+#define PRIO_LEVEL_COUNT       4
 
 /*-----------------------------------------------------------------------------
  * Number of tasks
  */
-#define TASK_COUNT             2
+#define TASK_COUNT             3
 
 /*-----------------------------------------------------------------------------
  * Number of spinlocks
@@ -186,7 +186,7 @@
 /*-----------------------------------------------------------------------------
  * Priority of RES_SCHEDULER
  */
-#define RES_SCHEDULER_PRIORITY 3
+#define RES_SCHEDULER_PRIORITY 4
 
 #define IDLE_TASK_ID    TASK_COUNT + ISR_COUNT
 

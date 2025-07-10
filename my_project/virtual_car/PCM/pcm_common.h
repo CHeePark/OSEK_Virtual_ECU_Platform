@@ -5,14 +5,28 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "../can_bus_server/can_protocol.h" // CAN 프로토콜 정의 포함
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
 //--engine_control_global_variable--//
 extern bool engine_on;
 extern int rpm;
 extern char gear_pos; 
 extern int acceleration; 
 
+extern int can_sock;
+extern struct sockaddr_in serv_addr;
+
 //function 선언
 void handle_engine(char input);
+// CAN 클라이언트 함수 선언
+void can_client_init(const char* server_ip, int port);
+void can_send(const can_msg_t* msg);
+int can_recv(can_msg_t* msg);
+
 
 //task, event 선언
 DeclareTask(Task_Driver_Input);

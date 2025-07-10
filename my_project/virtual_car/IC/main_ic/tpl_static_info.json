@@ -67,6 +67,28 @@
       "STACKSIZE" : 32768,
       "TIMING_PROTECTION" : "false",
       "USEINTERNALRESOURCE" : "false"
+    },    
+    {
+      "ACTIVATION" : 1,
+      "AUTOSTART" : "true",
+      "AUTOSTART_S" : 
+      {
+        "APPMODE" : 
+        [
+          
+          {
+            "VALUE" : "stdAppmode"
+          }
+        ]
+      },
+      "KIND" : "Task",
+      "NAME" : "Task_CAN_Receiver",
+      "NONPREEMPTABLE" : "false",
+      "PRIORITY" : 3,
+      "SCHEDULE" : "FULL",
+      "STACKSIZE" : 32768,
+      "TIMING_PROTECTION" : "false",
+      "USEINTERNALRESOURCE" : "false"
     }
   ]
 }

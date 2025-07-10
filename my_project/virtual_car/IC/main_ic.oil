@@ -11,6 +11,8 @@ CPU IC_SYSTEM {
     BUILD = TRUE {   
       APP_SRC = "main_ic.c";
       APP_SRC = "display_update.c";
+      APP_SRC = "can_receiver.c"; 
+      APP_SRC = "ic_can_client.c";
       TRAMPOLINE_BASE_PATH = "../../../";
       APP_NAME = "car_ic_exe";
       LINKER = "gcc";
@@ -33,6 +35,14 @@ CPU IC_SYSTEM {
     ACTIVATION = 1;
     SCHEDULE = FULL;
     EVENT = Event_Display_Update;
+  };
+
+  // TASK 섹션에 추가
+  TASK Task_CAN_Receiver {
+    PRIORITY = 3;
+    AUTOSTART = TRUE { APPMODE = stdAppmode; };
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
   };
 
   EVENT Event_Display_Update {

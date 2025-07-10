@@ -64,7 +64,8 @@ CONST(tpl_application_mode, OS_CONST) stdAppmode = 0; /* mask = 1 */
 CONST(tpl_application_mode, OS_CONST) OSDEFAULTAPPMODE = 0;
 CONST(tpl_appmode_mask, OS_CONST) tpl_task_app_mode[TASK_COUNT] = {
   1 /* task Task_Display_Update : stdAppmode */ ,
-  1 /* task Task_Driver_Input : stdAppmode */ 
+  1 /* task Task_Driver_Input : stdAppmode */ ,
+  1 /* task Task_CAN_Receiver : stdAppmode */ 
 };
 
 #define API_START_SEC_CONST_UNSPECIFIED
@@ -89,6 +90,10 @@ CONST(TaskType, AUTOMATIC) Task_Display_Update = Task_Display_Update_id;
 /* Task Task_Driver_Input identifier */
 #define Task_Driver_Input_id 1
 CONST(TaskType, AUTOMATIC) Task_Driver_Input = Task_Driver_Input_id;
+
+/* Task Task_CAN_Receiver identifier */
+#define Task_CAN_Receiver_id 2
+CONST(TaskType, AUTOMATIC) Task_CAN_Receiver = Task_CAN_Receiver_id;
 
 #define API_STOP_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
@@ -473,6 +478,111 @@ VAR(tpl_proc, OS_VAR) Task_Driver_Input_task_desc = {
 #define OS_STOP_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
+/*-----------------------------------------------------------------------------
+ * Task Task_CAN_Receiver descriptor
+ */
+#define APP_Task_Task_CAN_Receiver_START_SEC_CODE
+
+#include "tpl_memmap.h"
+/*
+ * Task Task_CAN_Receiver function prototype
+ */
+
+FUNC(void, OS_APPL_CODE) Task_CAN_Receiver_function(void);
+#define APP_Task_Task_CAN_Receiver_STOP_SEC_CODE
+
+#include "tpl_memmap.h"
+
+/*-----------------------------------------------------------------------------
+ * Target specific structures
+ */
+/*
+ * Task Task_CAN_Receiver stack
+ */
+#define APP_Task_Task_CAN_Receiver_START_SEC_STACK
+#include "tpl_memmap.h"
+tpl_stack_word Task_CAN_Receiver_stack_zone[32768/sizeof(tpl_stack_word)];
+#define APP_Task_Task_CAN_Receiver_STOP_SEC_STACK
+#include "tpl_memmap.h"
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+struct TPL_STACK Task_CAN_Receiver_stack = {Task_CAN_Receiver_stack_zone, 32768};
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define Task_CAN_Receiver_STACK &Task_CAN_Receiver_stack
+
+/*
+ * Task Task_CAN_Receiver context
+ */
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+struct TPL_CONTEXT Task_CAN_Receiver_context;
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
+#define Task_CAN_Receiver_CONTEXT &Task_CAN_Receiver_context
+
+
+
+
+
+/*
+  No timing protection
+ */
+
+#define OS_START_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+/*
+ * Static descriptor of task Task_CAN_Receiver
+ */
+CONST(tpl_proc_static, OS_CONST) Task_CAN_Receiver_task_stat_desc = {
+  /* context                  */  Task_CAN_Receiver_CONTEXT,
+  /* stack                    */  Task_CAN_Receiver_STACK,
+  /* entry point (function)   */  Task_CAN_Receiver_function,
+  /* internal ressource       */  NULL,
+  /* task id                  */  Task_CAN_Receiver_id,
+#if WITH_OSAPPLICATION == YES
+  /* OS application id        */  
+#endif
+  /* task base priority       */  3,
+  /* max activation count     */  1,
+  /* task type                */  TASK_BASIC,
+#if WITH_AUTOSAR_TIMING_PROTECTION == YES
+
+  /* execution budget */        0,
+  /* timeframe        */        0, 
+  /* pointer to the timing
+     protection descriptor    */ NULL
+
+#endif
+};
+
+#define OS_STOP_SEC_CONST_UNSPECIFIED
+#include "tpl_memmap.h"
+
+
+#define OS_START_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+/*
+ * Dynamic descriptor of task Task_CAN_Receiver
+ */
+VAR(tpl_proc, OS_VAR) Task_CAN_Receiver_task_desc = {
+  /* resources                      */  NULL,
+#if WITH_OSAPPLICATION == YES
+  /* if > 0 the process is trusted  */  ,    
+#endif /* WITH_OSAPPLICATION */
+  /* activate count                 */  0,
+  /* task priority                  */  3,
+  /* task state                     */  AUTOSTART
+};
+
+#define OS_STOP_SEC_VAR_UNSPECIFIED
+#include "tpl_memmap.h"
+
 
 #define OS_START_SEC_CONST_UNSPECIFIED
 #include "tpl_memmap.h"
@@ -483,6 +593,7 @@ CONSTP2CONST(tpl_proc_static, AUTOMATIC, OS_APPL_DATA)
 tpl_stat_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Task_Display_Update_task_stat_desc,
   &Task_Driver_Input_task_stat_desc,
+  &Task_CAN_Receiver_task_stat_desc,
   &IDLE_TASK_task_stat_desc
 };
 
@@ -490,6 +601,7 @@ CONSTP2VAR(tpl_proc, AUTOMATIC, OS_APPL_DATA)
 tpl_dyn_proc_table[TASK_COUNT+ISR_COUNT+1] = {
   &Task_Display_Update_task_desc,
   &Task_Driver_Input_task_desc,
+  &Task_CAN_Receiver_task_desc,
   &IDLE_TASK_task_desc
 };
 
@@ -515,8 +627,9 @@ tpl_task_events_table[EXTENDED_TASK_COUNT] = {
 #define OS_START_SEC_VAR_UNSPECIFIED
 #include "tpl_memmap.h"
 
-VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[4];
-VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[4] = {
+VAR(tpl_heap_entry, OS_VAR) tpl_ready_list[5];
+VAR(tpl_rank_count, OS_VAR) tpl_tail_for_prio[5] = {
+  0,
   0,
   0,
   0
@@ -559,6 +672,7 @@ CONSTP2CONST(char, AUTOMATIC, OS_APPL_DATA) proc_name_table[TASK_COUNT + ISR_COU
 
   "Task_Display_Update",
   "Task_Driver_Input",
+  "Task_CAN_Receiver",
   "*idle*"
 };
 #define API_STOP_SEC_CONST_UNSPECIFIED

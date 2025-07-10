@@ -12,6 +12,7 @@ CPU PCM_SYSTEM {
       APP_SRC = "main_pcm.c";
       APP_SRC = "engine_control.c";
       APP_SRC = "gear_control.c";
+      APP_SRC = "pcm_can_client.c";
       TRAMPOLINE_BASE_PATH = "../../../";
       APP_NAME = "car_pcm_exe";
       LINKER = "gcc";

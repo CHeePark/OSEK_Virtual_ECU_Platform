@@ -3,6 +3,17 @@
 bool lock_status = false; // 문 잠금 요청 (false:unlock, true:lock) 
 bool door_status = false; // 차량 도어 상태 (false:open, true:close)
 
+void send_Door_status() {
+    can_msg_t msg;
+    msg.id = 0x201;  // 엔진 상태 메시지 ID
+    msg.len = 1;
+    msg.data[0] = door_status;  // 엔진 상태
+    msg.data[1] = lock_status;  // 엔진 상태
+    can_send(&msg);
+    printf("[BCM/CAN] Door 상태 전송: %s, Lock 상태 전송: %s\r\n",
+            door_status ? "열림" : "잠김" ,lock_status ? "열림" : "잠금"); 
+}
+
 // 방향지시등 램프를 제어하는 Task
 TASK(Task_Door_Control) {
     while(1){
@@ -10,7 +21,7 @@ TASK(Task_Door_Control) {
         WaitEvent(Event_DoorLock_Request);
         ClearEvent(Event_DoorLock_Request);
         
-         printf("[BCM/입력] 현재 상태: \r\n");
+        printf("[BCM/입력] 현재 상태: \r\n");
         printf("도어 잠금 요청: %s\r\n", lock_status ? "잠금 요청" : "해제 요청");
         printf("도어 상태: %s\r\n\r\n", door_status ? "닫힘" : "열림");      
         
@@ -27,6 +38,7 @@ TASK(Task_Door_Control) {
             else {
                 printf("[BCM/도어] 🔓 문이 열렸습니다.\r\n\r\n");
             }
-        } 
+        }
+        send_Door_status(); 
     }
 }

@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-//--engine_control_global_variable--//
+//--pcm_global_variable--//
 extern bool engine_on;
 extern int rpm;
 extern char gear_pos; 
@@ -22,6 +22,8 @@ extern struct sockaddr_in serv_addr;
 
 //function 선언
 void handle_engine(char input);
+void send_engine_status(void);
+void send_gear_status(void);
 // CAN 클라이언트 함수 선언
 void can_client_init(const char* server_ip, int port);
 void can_send(const can_msg_t* msg);

@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> // read, write
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <sys/socket.h> // socket, bind, listen, accept
+#include <sys/types.h> // socket, fd_set
+#include <netinet/in.h> //sockaddr_in
+#include <arpa/inet.h> // inet_pton, htons
+#include <sys/select.h> // select, fd_isset
 #include <errno.h>
 #include <fcntl.h>
 
@@ -19,7 +20,7 @@
 typedef struct {
     int id;             // CAN 메시지 ID
     int len;            // 데이터 길이
-    unsigned char data[CAN_MSG_MAX_LEN];
+    unsigned char data[CAN_MSG_MAX_LEN]; //CAN 최대 8바이트 지원
 } can_msg_t;
 
 #endif

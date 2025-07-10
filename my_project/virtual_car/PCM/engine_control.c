@@ -7,17 +7,19 @@ extern int acceleration;
 
 extern void can_send(const can_msg_t* msg);
 
-// 엔진 상태가 변경될 때 호출할 함수
 void send_engine_status() {
     can_msg_t msg;
     msg.id = 0x100;  // 엔진 상태 메시지 ID
     msg.len = 3;
     msg.data[0] = engine_on ? 1 : 0;  // 엔진 상태
     msg.data[1] = (rpm >> 8) & 0xFF;  // RPM 상위 바이트
+    // 8비트 이동시켜서 상위 8비트만 살아남게함(1바이트만)
+    // 16비트 값을 2개의 8비트로 나누어 전송
     msg.data[2] = rpm & 0xFF;         // RPM 하위 바이트
-    
+    //16진수가 읽기 더 쉬움, 2진수보다 따라서 16진수로 저장
+    //0xFF는 255인데 msg.data는 unsigned char 배열이므로 0~255 범위의 값만 저장 가능
     can_send(&msg);
-    printf("[PCM/CAN] 엔진 상태 전송: %s, RPM: %d\n", 
+    printf("[PCM/CAN] 엔진 상태 전송: %s, RPM: %d\r\n", 
            engine_on ? "ON" : "OFF", rpm);
 }
 

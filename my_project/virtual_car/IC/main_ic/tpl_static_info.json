@@ -60,31 +60,9 @@
         ]
       },
       "KIND" : "Task",
-      "NAME" : "Task_Driver_Input",
-      "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 1,
-      "SCHEDULE" : "FULL",
-      "STACKSIZE" : 32768,
-      "TIMING_PROTECTION" : "false",
-      "USEINTERNALRESOURCE" : "false"
-    },    
-    {
-      "ACTIVATION" : 1,
-      "AUTOSTART" : "true",
-      "AUTOSTART_S" : 
-      {
-        "APPMODE" : 
-        [
-          
-          {
-            "VALUE" : "stdAppmode"
-          }
-        ]
-      },
-      "KIND" : "Task",
       "NAME" : "Task_CAN_Receiver",
       "NONPREEMPTABLE" : "false",
-      "PRIORITY" : 3,
+      "PRIORITY" : 1,
       "SCHEDULE" : "FULL",
       "STACKSIZE" : 32768,
       "TIMING_PROTECTION" : "false",

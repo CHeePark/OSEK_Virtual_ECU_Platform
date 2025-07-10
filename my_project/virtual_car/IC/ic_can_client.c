@@ -12,7 +12,7 @@ void can_client_init(const char* server_ip, int port) {
     inet_pton(AF_INET, server_ip, &serv_addr.sin_addr);
     
     if (connect(can_sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        perror("CAN 서버 연결 실패\r\n");
+        printf("CAN 서버 연결 실패\r\n");
     } 
     
     else {
@@ -21,9 +21,16 @@ void can_client_init(const char* server_ip, int port) {
 }
 
 void can_send(const can_msg_t* msg) {
-    write(can_sock, msg, sizeof(can_msg_t));
+    int ret=write(can_sock, msg, sizeof(can_msg_t));
+    if(ret<0){
+        printf("[IC/CAN] CAN 메시지 전송 실패\r\n");
+    }
 }
 
 int can_recv(can_msg_t* msg) {
-    return read(can_sock, msg, sizeof(can_msg_t));
+    int ret = read(can_sock, msg, sizeof(can_msg_t));
+    if(ret<0){
+        printf("[IC/CAN] CAN 메시지 수신 실패\r\n");
+    }
+    return ret; 
 }

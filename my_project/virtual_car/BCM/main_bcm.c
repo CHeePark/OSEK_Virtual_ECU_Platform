@@ -35,6 +35,11 @@ TASK(Task_Driver_Input) {
 
 //-- main --//
 int main(void) {
+     // CAN 클라이언트 초기화
+    printf("BCM CAN 클라이언트 초기화 중...\r\n");
+    can_client_init("127.0.0.1", 9000); //로컬로 연결
+    printf("BCM CAN 클라이언트 초기화 완료\r\n");
+    
     printf("BCM(Body Control Module) 시스템 부팅...\r\n\r\n");
     StartOS(stdAppmode);
     return 0;

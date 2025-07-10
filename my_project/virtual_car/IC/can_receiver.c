@@ -5,11 +5,10 @@ TASK(Task_CAN_Receiver) {
     printf("[IC/CAN] 메시지 수신 태스크 시작\r\n");
     
     while(1) {
-        // CAN 메시지 수신 (실제 구현)
         can_msg_t msg;
         int ret = can_recv(&msg);
         
-        if (ret > 0) {
+        if (ret > 0) { // receive 성공했다면
             can_msg_id = msg.id;
             memcpy(can_data, msg.data, 8);
             
@@ -17,18 +16,16 @@ TASK(Task_CAN_Receiver) {
             
             // CAN ID에 따라 다른 처리
             switch(can_msg_id) {
-                case 0x100: // PCM 엔진 상태
+                case 0x100: // PCM 엔진, rpm
                     engine_status = can_data[0];
                     engine_rpm = (can_data[1] << 8) | can_data[2];
                     printf("[IC/CAN] 엔진 상태 수신: %s, RPM: %d\r\n", 
                            engine_status ? "ON" : "OFF", engine_rpm);
                     break;
                     
-                case 0x101: // PCM 속도, 기어
-                    vehicle_speed = (can_data[0] << 8) | can_data[1];
-                    gear_position = can_data[2];
-                    printf("[IC/CAN] 속도/기어 수신: %d km/h, 기어: %c\r\n", 
-                           vehicle_speed, gear_position);
+                case 0x101: // PCM 기어
+                    gear_position = can_data[0];
+                    printf("[IC/CAN] 기어: %c\r\n", gear_position-32);
                     break;
                     
                 case 0x200: // BCM 방향지시등
@@ -38,6 +35,9 @@ TASK(Task_CAN_Receiver) {
                     
                 case 0x201: // BCM 도어 상태
                     door_status = can_data[0];
+                    lock_status = can_data[1];
+                    printf("[IC/CAN] 잠금 상태 수신: %s\r\n", 
+                           lock_status ? "잠금 요청" : "잠금 해제 요청");
                     printf("[IC/CAN] 도어 상태 수신: %s\r\n", 
                            door_status ? "닫힘" : "열림");
                     break;

@@ -541,7 +541,6 @@ FUNC(ISRType, OS_CODE) GetISRID(void);
 DeclareApplicationMode(stdAppmode);
 DeclareTask(Task_CAN_Receiver);
 DeclareTask(Task_Display_Update);
-DeclareTask(Task_Driver_Input);
 DeclareEvent(Event_Display_Update);
 
 #ifdef __cplusplus

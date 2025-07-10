@@ -1,4 +1,4 @@
-#include "pcm_common.h"
+#include "bcm_common.h"
 
 int can_sock;
 struct sockaddr_in serv_addr;
@@ -14,21 +14,21 @@ void can_client_init(const char* server_ip, int port) {
     printf("CAN 서버 연결 실패\r\n");
     } 
     else {
-        printf("[PCM/CAN] 서버 연결 성공\r\n");
+        printf("[BCM/CAN] 서버 연결 성공\r\n");
     }
 }
 
 void can_send(const can_msg_t* msg) {
     int ret=write(can_sock, msg, sizeof(can_msg_t));
     if(ret<0){
-        printf("[PCM] CAN 메시지 전송 실패\r\n");
+        printf("[BCM] CAN 메시지 전송 실패\r\n");
     }
 }
 
 int can_recv(can_msg_t* msg) {
     int ret = read(can_sock, msg, sizeof(can_msg_t));
     if(ret<0){
-        printf("[PCM] CAN 메시지 수신 실패\r\n");
+        printf("[BCM] CAN 메시지 수신 실패\r\n");
     }
     return ret; 
 }

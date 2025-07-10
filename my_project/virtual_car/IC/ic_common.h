@@ -18,6 +18,7 @@ extern int engine_rpm;          // 엔진 RPM
 extern bool engine_status;      // 엔진 상태
 extern int turn_signal_status;  // 방향지시등 상태
 extern bool door_status;         // 도어 상태
+extern bool lock_status;         // 잠금 상태
 extern char gear_position;      // 기어 위치
 
 extern int can_sock;
@@ -27,14 +28,13 @@ extern int can_msg_id;
 
 // function 선언
 void update_dashboard_display(void);
-
 void can_client_init(const char* server_ip, int port);
 void can_send(const can_msg_t* msg);
 int can_recv(can_msg_t* msg);
 
 // task, event 선언
-DeclareTask(Task_Driver_Input);
 DeclareTask(Task_Display_Update);
+DeclareTask(Task_CAN_Receiver);
 DeclareEvent(Event_Display_Update);
 
 

@@ -128,6 +128,7 @@ cSourceList.append(projfile.ProjectFile("autosar/tpl_as_isr_kernel.c", trampolin
 cSourceList.append(projfile.ProjectFile("main_bcm.c"))
 cSourceList.append(projfile.ProjectFile("turn_signal.c"))
 cSourceList.append(projfile.ProjectFile("door_lock.c"))
+cSourceList.append(projfile.ProjectFile("bcm_can_client.c"))
 
 #--- Add generated files
 cSourceList.append(projfile.ProjectFile("main_bcm/tpl_app_config.c"))

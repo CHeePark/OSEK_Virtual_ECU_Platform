@@ -38,7 +38,7 @@ int main(void) {
 
     // CAN 클라이언트 초기화
     printf("PCM CAN 클라이언트 초기화 중...\r\n");
-    can_client_init("127.0.0.1", 9000);
+    can_client_init("127.0.0.1", 9000); //로컬로 연결
     printf("PCM CAN 클라이언트 초기화 완료\r\n");
     
     printf("PCM(파워트레인 제어 모듈) 시스템 부팅...\r\n\r\n");

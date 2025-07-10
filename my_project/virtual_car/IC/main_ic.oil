@@ -22,13 +22,6 @@ CPU IC_SYSTEM {
   
   APPMODE stdAppmode {};
 
-  TASK Task_Driver_Input {
-    PRIORITY = 1;
-    AUTOSTART = TRUE { APPMODE = stdAppmode; };
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-  };
-
   TASK Task_Display_Update {
     PRIORITY = 2;
     AUTOSTART = TRUE { APPMODE = stdAppmode; };
@@ -37,9 +30,8 @@ CPU IC_SYSTEM {
     EVENT = Event_Display_Update;
   };
 
-  // TASK 섹션에 추가
   TASK Task_CAN_Receiver {
-    PRIORITY = 3;
+    PRIORITY = 1;
     AUTOSTART = TRUE { APPMODE = stdAppmode; };
     ACTIVATION = 1;
     SCHEDULE = FULL;

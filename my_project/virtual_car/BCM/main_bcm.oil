@@ -12,6 +12,7 @@ CPU BCM_SYSTEM {
       APP_SRC = "main_bcm.c";
       APP_SRC = "turn_signal.c";
       APP_SRC = "door_lock.c";
+      APP_SRC = "bcm_can_client.c";
       TRAMPOLINE_BASE_PATH = "../../../";
       APP_NAME = "car_bcm_exe";
       LINKER = "gcc";

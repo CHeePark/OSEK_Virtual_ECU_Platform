@@ -26,6 +26,7 @@ void handle_door(char input);
 void send_turn_signal_status(void);
 // CAN 클라이언트 함수 선언
 void can_client_init(const char* server_ip, int port);
+void can_client_close(); 
 void can_send(const can_msg_t* msg);
 int can_recv(can_msg_t* msg);   
 

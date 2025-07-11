@@ -29,12 +29,14 @@ extern int can_msg_id;
 // function 선언
 void update_dashboard_display(void);
 void can_client_init(const char* server_ip, int port);
+void can_client_close(void);
 void can_send(const can_msg_t* msg);
 int can_recv(can_msg_t* msg);
 
 // task, event 선언
 DeclareTask(Task_Display_Update);
 DeclareTask(Task_CAN_Receiver);
+DeclareTask(Task_Keyboard_Input);
 DeclareEvent(Event_Display_Update);
 
 

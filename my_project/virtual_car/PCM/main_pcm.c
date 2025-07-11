@@ -3,11 +3,12 @@
 int acceleration = 0; // (0: 정지, 1: 가속, 2: 감속)
 
 TASK(Task_Driver_Input) {
-    printf("PCM 통합 제어 시스템 \r\n");
-    printf("  [엔진] e:시동 on/off, w:가속, s:감속\r\n");
-    printf("  [기어] p, r, n, d \r\n");
-    printf("  [종료] q 또는 a\r\n\r\n");
-
+    printf("=====PCM 통합 제어 시스템=====\r\n");
+    printf("[엔진] e:시동 on/off, w:가속, s:감속\r\n");
+    printf("[기어] p, r, n, d \r\n");
+    printf("[종료] z   (q 또는 a는 비정상 종료 입니다.)\r\n\r\n");
+    printf("=====PCM 통합 제어 시스템=====\r\n");
+    
     while(1) {
         int input = getchar();
 
@@ -22,10 +23,12 @@ TASK(Task_Driver_Input) {
                 SetEvent(Task_Gear_Control, Event_Gear_Change_Request);
                 break;
             
-            case 'q' : case 'a':
+            case 'z':
                 printf("PCM 시스템 종료...\r\n");
+                can_client_close(); // CAN 클라이언트 연결 종료
                 ShutdownOS(E_OK); // OS 종료
                 return; // 태스크 종료
+
             default:
                 printf("[PCM/입력 오류] 잘못된 입력입니다.\r\n");
                 break;

@@ -3,10 +3,11 @@
 
 //-- 공용 Task: 운전자의 키보드 입력을 처리 --//
 TASK(Task_Driver_Input) {
-    printf("BCM 통합 제어 시스템\r\n");
-     printf("[방향지시등]   s:좌측, d:끄기, f:우측\r\n");
-    printf("[도어]          l:잠금, u:해제, o:문열기, c:문닫기\r\n");
-    printf("[종료] q 또는 a\r\n\r\n");
+    printf("=====BCM 통합 제어 시스템=====\r\n");
+    printf("[방향지시등]   s:좌측, d:끄기, f:우측\r\n");
+    printf("[도어]  l:잠금, u:해제, o:문열기, c:문닫기\r\n");
+    printf("[종료]  z   (q 또는 a는 비정상 종료 입니다.)\r\n");
+    printf("=====BCM 통합 제어 시스템=====\r\n");
 
     while(1) {
         int input = getchar();
@@ -21,7 +22,8 @@ TASK(Task_Driver_Input) {
             case 'o': case 'c':
                 handle_door(input);
                 break;
-            case 'q': case 'a':
+            case 'z':
+                can_client_close();
                 printf("BCM 시스템 종료...\r\n");
                 ShutdownOS(E_OK); 
                 return; 

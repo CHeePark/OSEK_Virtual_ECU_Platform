@@ -20,6 +20,15 @@ void can_client_init(const char* server_ip, int port) {
     }
 }
 
+void can_client_close() {
+    if (can_sock > 0) {
+        printf("[CAN] 서버 연결 종료 중...\r\n");
+        close(can_sock);
+        can_sock = -1;
+        printf("[CAN] 서버 연결 종료 완료\r\n");
+    }
+}
+
 void can_send(const can_msg_t* msg) {
     int ret=write(can_sock, msg, sizeof(can_msg_t));
     if(ret<0){

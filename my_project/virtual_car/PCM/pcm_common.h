@@ -26,6 +26,7 @@ void send_engine_status(void);
 void send_gear_status(void);
 // CAN 클라이언트 함수 선언
 void can_client_init(const char* server_ip, int port);
+void can_client_close(void);
 void can_send(const can_msg_t* msg);
 int can_recv(can_msg_t* msg);
 

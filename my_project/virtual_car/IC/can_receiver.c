@@ -5,6 +5,7 @@ TASK(Task_CAN_Receiver) {
     printf("[IC/CAN] 메시지 수신 태스크 시작\r\n");
     
     while(1) {
+         
         can_msg_t msg;
         int ret = can_recv(&msg);
         

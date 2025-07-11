@@ -69,6 +69,12 @@ int main() {
             //new socket 생성, 연결 수락
             for (i = 0; i < MAX_CLIENTS; i++) {
                 if (client_socket[i] == 0) {
+                    
+                    // 접속한 클라이언트 정보 출력 추가
+                    printf("새 클라이언트 #%d 접속 IP: %s, Port: %d\n", 
+                    i,inet_ntoa(address.sin_addr), 
+                    ntohs(address.sin_port));
+                    
                     client_socket[i] = new_socket;
                     break;
                 }
@@ -81,6 +87,7 @@ int main() {
             if (FD_ISSET(sd, &readfds)) { // sd(클라이언트 소켓)에 이벤트 발생(데이터 도착) 여부 확인
                 valread = read(sd, &msg, sizeof(msg)); //sd로부터 데이터 msg에 저장
                 if (valread == 0) { //varlead는 read()가 읽은 바이트 수, 성공시 > 0, 실패시 < 0, 연결 종료시 0
+                    printf("클라이언트 #%d 연결 종료 (소켓: %d)\n", i, sd);
                     close(sd);
                     client_socket[i] = 0; //연결 종료했으므로 cient_socket[i] 비우기
                 } 

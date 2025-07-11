@@ -35,5 +35,5 @@ void update_dashboard_display(void) {
     
     // read IC data
     printf("[IC/속도계] 현재 속도: %d km/h\r\n", vehicle_speed);
-
+    
 }
